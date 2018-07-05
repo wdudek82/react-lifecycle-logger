@@ -7,7 +7,7 @@ type Props = {
 };
 
 class App extends React.Component<Props> {
-  static displayName = 'AnotherOne';
+  static displayName = 'App';
 
   static defaultProps = {
     foo: 5,
