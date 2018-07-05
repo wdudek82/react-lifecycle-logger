@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import loggify from './loggify';
 
 type Props = {
   foo?: number,
@@ -19,6 +20,6 @@ class App extends React.Component<Props> {
   render() {
     return <h1>Hello</h1>;
   }
-};
+}
 
-export default App;
+export default loggify(App);
