@@ -1,24 +1,51 @@
 // @flow
 import React from 'react';
+import PollChild from './PollChild';
 import loggify from './loggify';
 
-type Props = {
-  foo?: number,
+type State = {
+  data: ?number,
+  showPollChild: boolean,
 };
 
-class App extends React.Component<Props> {
+class App extends React.Component<null, State> {
   static displayName = 'App';
 
-  static defaultProps = {
-    foo: 5,
+  state = {
+    data: null,
+    showPollChild: false,
+  };
+
+  componentWillMount() {
+    this.fetchData();
   }
 
-  componentDidUpdate() {
-    console.log(this.props.foo);
-  }
+  fetchData = () => {
+    console.log('Going to fetch data!');
+    setTimeout(() => {
+      console.log('data retrieved!');
+      this.setState(() => ({ data: Math.random() }));
+    }, 1000);
+  };
 
   render() {
-    return <h1>Hello</h1>;
+    const { showPollChild } = this.state;
+
+    return (
+      <div>
+        <h1>Hello {this.state.data ? this.state.data : '?'}</h1>
+        <button
+          type="submit"
+          onClick={() => {
+            this.setState((prevState) => ({ showPollChild: !prevState.showPollChild }));
+          }}
+        >
+          {showPollChild ? 'Hide' : 'Show'}
+        </button>
+
+        {showPollChild ? <PollChild /> : null}
+      </div>
+    );
   }
 }
 

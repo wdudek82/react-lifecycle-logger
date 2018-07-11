@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 export default function logify(Wrapped) {
@@ -8,7 +8,7 @@ export default function logify(Wrapped) {
   const methodsToLog = [
     'componentWillReceiveProps',
     // 'getDerivedStateFromProps',
-    'shouldComponentUpdate',
+    // 'shouldComponentUpdate',
     'componentWillUpdate',
     // 'render',
     'componentDidUpdate',
@@ -40,7 +40,9 @@ export default function logify(Wrapped) {
   /* eslint-enable func-names */
   /* eslint-enable no-param-reassign */
 
-  return (props) => {
+  type Props = {};
+
+  return (props: Props) => {
     return (
       <LoggerContainer>
         <H2>{Wrapped.displayName} is now loggified</H2>
