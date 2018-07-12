@@ -6,6 +6,7 @@ import loggify from './loggify';
 type State = {
   data: ?number,
   showPollChild: boolean,
+  parentPoll: number,
 };
 
 class App extends React.Component<null, State> {
@@ -14,10 +15,16 @@ class App extends React.Component<null, State> {
   state = {
     data: null,
     showPollChild: false,
+    parentPoll: -1,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchData();
+    this.createParentPoll();
+  }
+
+  componentWillUnmount = () => {
+    clearInterval(this.pollInterval);
   }
 
   fetchData = () => {
@@ -28,25 +35,42 @@ class App extends React.Component<null, State> {
     }, 1000);
   };
 
+  createParentPoll = () => {
+    this.pollInterval = setInterval(() => {
+      this.setState(() => ({ parentPoll: getRandomInt(1, 9) }));
+    }, 5000);
+  };
+
   render() {
-    const { showPollChild } = this.state;
+    const { data, showPollChild, parentPoll } = this.state;
 
     return (
       <div>
-        <h1>Hello {this.state.data ? this.state.data : '?'}</h1>
+        <h1>Hello {data || '?'}</h1>
+        <h3>{parentPoll}</h3>
         <button
           type="submit"
           onClick={() => {
-            this.setState((prevState) => ({ showPollChild: !prevState.showPollChild }));
+            this.setState((prevState) => ({
+              showPollChild: !prevState.showPollChild,
+            }));
           }}
         >
           {showPollChild ? 'Hide' : 'Show'}
         </button>
 
-        {showPollChild ? <PollChild /> : null}
+        {showPollChild ?
+          <PollChild parentPoll={parentPoll} /> :
+          null}
       </div>
     );
   }
+}
+
+function getRandomInt(min, max) {
+  const _min = Math.ceil(min);
+  const _max = Math.floor(max);
+  return Math.floor(Math.random() * (_max - _min + 1)) + _min;
 }
 
 export default loggify(App);

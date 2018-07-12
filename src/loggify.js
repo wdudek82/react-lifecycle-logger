@@ -26,13 +26,27 @@ export default function logify(Wrapped) {
     /* eslint-disable no-param-reassign */
     Wrapped.prototype[method] = function(...args) {
       let original = originals[method];
+
       console.groupCollapsed(`${Wrapped.displayName} called ${method}`);
+
+      if (method === 'componentWillReceiveProps') {
+        console.log('nextProps', args[0]);
+      }
+
       console.groupEnd();
 
       if (original) {
         original = original.bind(this);
         original(...args);
       }
+    };
+
+    Wrapped.prototype.setState = function(partialState, callback) {
+      console.groupCollapsed(`${Wrapped.displayName} setState`);
+      console.log('partialState', partialState);
+      console.log('callback', callback);
+      console.groupEnd();
+      this.updater.enqueueSetState(this, partialState, callback, 'setState');
     };
 
     return 0;

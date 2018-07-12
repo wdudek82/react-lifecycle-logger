@@ -2,7 +2,9 @@
 import React from 'react';
 import logify from './loggify';
 
-type Props = {};
+type Props = {
+  parentPoll: number,
+};
 
 type State = {
   poll: number,
@@ -13,7 +15,7 @@ class PollChild extends React.Component<Props, State> {
 
   state = {
     poll: 0,
-  }
+  };
 
   componentDidMount() {
     this.pollData();
@@ -26,14 +28,17 @@ class PollChild extends React.Component<Props, State> {
   pollData = () => {
     this.pollInterval = setInterval(() => {
       console.log('Poll!');
-      this.setState(() => (
-        { poll: Math.floor(Math.random() * 10) }
-      ));
-    }, 1000);
+      this.setState(() => ({ poll: Math.floor(Math.random() * 10) }));
+    }, 5000);
   };
 
   render() {
-    return <h4>poll: {this.state.poll}</h4>;
+    return (
+      <div>
+        <h4>poll: {this.state.poll}</h4>
+        <h4>parentPoll: {this.props.parentPoll}</h4>
+      </div>
+    );
   }
 }
 
