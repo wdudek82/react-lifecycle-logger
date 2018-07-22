@@ -11,6 +11,8 @@ type State = {
 };
 
 class PollChild extends React.Component<Props, State> {
+  pollInterval: IntervalID = setInterval(() => {}, 5000);
+
   static displayName = 'PollChild';
 
   state = {

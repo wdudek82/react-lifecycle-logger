@@ -2,13 +2,16 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-export default function logify(Wrapped) {
+type HOC<A, B> = (a: React.ComponentType<A>) =>
+  React.ComponentType<B>;
+
+export default function logify(Wrapped: HOC<*, *>) {
   const originals = {};
 
   const methodsToLog = [
     'componentWillReceiveProps',
     // 'getDerivedStateFromProps',
-    // 'shouldComponentUpdate',
+    'shouldComponentUpdate',
     'componentWillUpdate',
     // 'render',
     'componentDidUpdate',
@@ -17,7 +20,7 @@ export default function logify(Wrapped) {
     'componentDidMount',
   ];
 
-  methodsToLog.map((method) => {
+  methodsToLog.map(method => {
     if (Wrapped.prototype[method]) {
       originals[method] = Wrapped.prototype[method];
     }
@@ -29,7 +32,7 @@ export default function logify(Wrapped) {
 
       console.groupCollapsed(`${Wrapped.displayName} called ${method}`);
 
-      if (method === 'componentWillReceiveProps') {
+      if (method === 'componentWillReceiveProps' || 'shouldComponentUpdate') {
         console.log('nextProps', args[0]);
       }
 
