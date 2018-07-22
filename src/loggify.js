@@ -2,8 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-type HOC<A, B> = (a: React.ComponentType<A>) =>
-  React.ComponentType<B>;
+type HOC<A, B> = (a: React.ComponentType<A>) => React.ComponentType<B>;
 
 export default function logify(Wrapped: HOC<*, *>) {
   const originals = {};
@@ -36,12 +35,27 @@ export default function logify(Wrapped: HOC<*, *>) {
         console.log('nextProps', args[0]);
       }
 
+      if (method === 'shouldComponentUpdate') {
+        console.log('nextState', args[1]);
+      }
+
       console.groupEnd();
+
+      let result;
 
       if (original) {
         original = original.bind(this);
-        original(...args);
+        result = original(...args);
       }
+
+      if (
+        method === 'shouldComponentUpdate' &&
+        typeof original === 'undefined'
+      ) {
+        result = true;
+      }
+
+      return result;
     };
 
     Wrapped.prototype.setState = function(partialState, callback) {
