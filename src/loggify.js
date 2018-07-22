@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 type HOC<A, B> = (a: React.ComponentType<A>) => React.ComponentType<B>;
 
-export default function logify(Wrapped: HOC<*, *>) {
+export default function loggify(Wrapped: HOC<*, *>) {
   const originals = {};
 
   const methodsToLog = [
@@ -31,12 +31,21 @@ export default function logify(Wrapped: HOC<*, *>) {
 
       console.groupCollapsed(`${Wrapped.displayName} called ${method}`);
 
-      if (method === 'componentWillReceiveProps' || 'shouldComponentUpdate') {
+      if (
+        method === 'componentWillReceiveProps' ||
+        'shouldComponentUpdate' ||
+        'componentWillUpdate'
+      ) {
         console.log('nextProps', args[0]);
       }
 
-      if (method === 'shouldComponentUpdate') {
+      if (method === 'shouldComponentUpdate' || 'componentWillUpdate') {
         console.log('nextState', args[1]);
+      }
+
+      if (method === 'componentDidUpdate') {
+        console.log('prevProps', args[0]);
+        console.log('prevState', args[1]);
       }
 
       console.groupEnd();
